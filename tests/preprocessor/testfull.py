@@ -9,7 +9,8 @@ class TestPreprocessorFull(unittest.TestCase):
         with open(testfile_folder / 'testfile5') as file:
             with open(testfile_folder / 'testfile5.cmp') as compare_file:
                 pp = PreProcessor()
-                result = pp.main(file)
+                pp.main(file)
+
                 cpp = PreProcessor()
                 cpp.parse_file(compare_file)
 
