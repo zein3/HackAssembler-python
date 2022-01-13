@@ -88,7 +88,7 @@ class PreProcessor():
         result = []
         i = 0
         for line in self.code:
-            labels = re.search(r"(?<=\()([a-zA-Z]+)(?=\))", line)
+            labels = re.search(r"(?<=\()(.+)(?=\))", line)
             if labels:
                 self.variables[labels[0]] = i
             else:

@@ -7,13 +7,13 @@ class TestPreprocessorFull(unittest.TestCase):
     def test_full(self):
         testfile_folder = Path('tests/preprocessor/')
         with open(testfile_folder / 'testfile5') as file:
-            pp = PreProcessor()
-            pp.main(file)
+            with open(testfile_folder / 'testfile5.cmp') as compare_file:
+                pp = PreProcessor()
+                result = pp.main(file)
+                cpp = PreProcessor()
+                cpp.parse_file(compare_file)
 
-            print(pp.variables)
-            print(pp.code)
-
-            self.assertTrue(1 == 1)
+                self.assertEqual(pp.code, cpp.code)
 
 
 if __name__ == "__main__":
