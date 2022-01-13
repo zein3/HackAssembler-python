@@ -1,4 +1,4 @@
-from src.hack_assembler import preprocessor
+from src.hack_assembler.preprocessor import PreProcessor
 from pathlib import Path
 import unittest
 
@@ -13,48 +13,58 @@ class TestPreprocessor(unittest.TestCase):
         self.file5 = open(testfile_folder / "testfile5")
         self.file5cmp = open(testfile_folder / "testfile5.cmp")
 
-        self.code3 = preprocessor.parse_file(self.file3)
-        self.code4 = preprocessor.parse_file(self.file4)
-
     def test_can_parse_file(self):
-        result = preprocessor.parse_file(self.file1)
-        self.assertEqual(result, ['Testing', 'Second Line', 'Third Line'])
+        pp = PreProcessor()
+        pp.parse_file(self.file1)
+        self.assertEqual(pp.code, ['Testing', 'Second Line', 'Third Line'])
+
 
     def test_can_parse_file_without_EOF(self):
-        result = preprocessor.parse_file(self.file2)
-        self.assertEqual(result, ['test1', 'test2'])
+        pp = PreProcessor()
+        pp.parse_file(self.file2)
+        self.assertEqual(pp.code, ['test1', 'test2'])
 
     def test_can_clean_code(self):
-        result = preprocessor.clean_code(self.code3)
+        pp = PreProcessor()
+        pp.parse_file(self.file3)
+        pp.clean_code()
 
-        self.assertEqual(result, ['@12', '(TEST)', 'A=D', '@TEST', 'D;JGT', '(END)', '@END', '0;JMP'])
+        self.assertEqual(pp.code, ['@12', '(TEST)', 'A=D', '@TEST', 'D;JGT', '(END)', '@END', '0;JMP'])
 
     def test_can_find_all_label_declarations(self):
-        initial_length = len(preprocessor.variables)
-        result = preprocessor.find_labels(preprocessor.clean_code(self.code3))
-        final_length = len(preprocessor.variables)
+        pp = PreProcessor()
 
-        self.assertEqual(result, ['@12', 'A=D', '@TEST', 'D;JGT', '@END', '0;JMP'])
+        initial_length = len(pp.variables)
+        pp.parse_file(self.file3)
+        pp.clean_code()
+        pp.find_labels()
+        final_length = len(pp.variables)
+
+        self.assertEqual(pp.code, ['@12', 'A=D', '@TEST', 'D;JGT', '@END', '0;JMP'])
         self.assertTrue((final_length - initial_length) == 2)
-        self.assertTrue("TEST" in preprocessor.variables and "END" in preprocessor.variables)
-        self.assertTrue(preprocessor.variables["TEST"] == 1 and preprocessor.variables["END"] == 4)
+        self.assertTrue("TEST" in pp.variables and "END" in pp.variables)
+        self.assertTrue(pp.variables["TEST"] == 1 and pp.variables["END"] == 4)
 
     def test_can_replace_labels(self):
-        temp = preprocessor.clean_code(self.code3)
-        temp2 = preprocessor.find_labels(temp)
-        result = preprocessor.replace_symbols(temp2)
+        pp = PreProcessor()
+        pp.parse_file(self.file3)
+        pp.clean_code()
+        pp.find_labels()
+        pp.replace_symbols()
 
-        self.assertEqual(result, ['@12', 'A=D', '@1', 'D;JGT', '@4', '0;JMP'])
+        self.assertEqual(pp.code, ['@12', 'A=D', '@1', 'D;JGT', '@4', '0;JMP'])
 
     def test_can_allocate_variables(self):
-        result = preprocessor.replace_symbols(self.code4)
+        pp = PreProcessor()
+        pp.parse_file(self.file4)
+        pp.replace_symbols()
 
-        self.assertEqual(result, ['@16', 'M=1', '@17', 'M=0'])
+        self.assertEqual(pp.code, ['@16', 'M=1', '@17', 'M=0'])
 
-    def test_full(self):
-        result = preprocessor.preprocessor(self.file5)
-        compare = preprocessor.parse_file(self.file5cmp)
-        print(result)
+    # def test_full(self):
+        # result = preprocessor.preprocessor(self.file5)
+        # compare = preprocessor.parse_file(self.file5cmp)
+        # print(result)
 
         # self.assertEqual(result, compare)
 

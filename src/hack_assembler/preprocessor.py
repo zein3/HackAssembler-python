@@ -5,8 +5,7 @@
 import re
 from . import utils
 
-
-variables = {
+INITIAL_VARIABLES = {
     "R0": 0,
     "R1": 1,
     "R2": 2,
@@ -33,89 +32,97 @@ variables = {
 }
 
 
-def preprocessor(file) -> list:
-    code = parse_file(file)
-    cleaned_code = clean_code(code)
-    labeled_code = find_labels(cleaned_code)
-    result = replace_symbols(labeled_code)
-    print(variables)
+class PreProcessor():
+    def __init__(self):
+        self.variables = INITIAL_VARIABLES
 
-    return result
+    def main(self, file):
+        self.parse_file(file)
+        self.clean_code()
+        self.find_labels()
+        self.replace_symbols()
 
+        return self.code
 
-def parse_file(file) -> list:
-    """
-    Parse the file into an array of strings
-    """
-    result = file.read().split("\n")
-    if (result[len(result) - 1]):
-        return result
-    else:
-        return result[0:len(result) - 1]
-
-
-def clean_code(code: list) -> list:
-    """
-    Remove all blank lines and comments from the file, as well as trim every instruction.
-    Don't delete labels as they're going to be used later.
-    """
-    cleanedCode = []
-    for line in code:
-        # Remove blank lines and line comments
-        if line == '' or line.startswith('//'):
-            continue
-
-        # Remove inline comments
-        line = re.sub(r"\/\/.*", "", line)
-
-        # Delete all whitespace
-        line = re.sub(r"\s", "", line)
-
-        cleanedCode.append(line)
-
-    return cleanedCode
-
-
-def find_labels(code: list) -> list:
-    """
-    Find all label declarations in code to add them to variables dictionary and then remove them from the code.
-    """
-    result = []
-    i = 0
-    for line in code:
-        labels = re.search(r"(?<=\()([a-zA-Z]+)(?=\))", line)
-        if labels:
-            variables[labels[0]] = i
+    def parse_file(self, file):
+        """
+        Parse the file into an array of strings
+        """
+        result = file.read().split("\n")
+        if (result[len(result) - 1]):
+            self.code = result
         else:
-            result.append(line)
-            i += 1
+            self.code = result[0:len(result) - 1]
 
-    return result
+    def clean_code(self):
+        """
+        Remove all blank lines and comments from the file, as well as trim every instruction.
+        Don't delete labels as they're going to be used later.
+        """
+        if not self.code:
+            return
 
+        cleanedCode = []
+        for line in self.code:
+            # Remove blank lines and line comments
+            if line == '' or line.startswith('//'):
+                continue
 
-def replace_symbols(code: list) -> list:
-    """
-    Replace all the symbols in the code with addresses (all symbols are in A-instruction).
-    When an unknown symbol is found, allocate it to an unused address.
-    """
-    result = []
-    for line in code:
-        if re.search(r"^@[^0-9]+", line):
-            # get the variable name
-            var = re.search(r"(?<=@).+", line)
-            if not var:
-                raise Exception(f"Invalid A-instruction found.")
-            var = var[0]
+            # Remove inline comments
+            line = re.sub(r"\/\/.*", "", line)
 
-            # if var doesn't exist, allocate a memory to it
-            if var not in variables:
-                utils.allocate_memory(variables, var)
+            # Delete all whitespace
+            line = re.sub(r"\s", "", line)
 
-            # make the instruction
-            instruction = f"@{variables[var]}"
-        else:
-            instruction = line
+            cleanedCode.append(line)
 
-        result.append(instruction)
+        self.code = cleanedCode
 
-    return result
+    def find_labels(self):
+        """
+        Find all label declarations in code to add them to variables dictionary and then remove them from the code.
+        """
+        if not self.code:
+            return
+
+        result = []
+        i = 0
+        for line in self.code:
+            labels = re.search(r"(?<=\()([a-zA-Z]+)(?=\))", line)
+            if labels:
+                self.variables[labels[0]] = i
+            else:
+                result.append(line)
+                i += 1
+
+        self.code = result
+
+    def replace_symbols(self):
+        """
+        Replace all the symbols in the code with addresses (all symbols are in A-instruction).
+        When an unknown symbol is found, allocate it to an unused address.
+        """
+        if not self.code:
+            return
+
+        result = []
+        for line in self.code:
+            if re.search(r"^@[^0-9]+", line):
+                # get the variable name
+                var = re.search(r"(?<=@).+", line)
+                if not var:
+                    raise Exception(f"Invalid A-instruction found.")
+                var = var[0]
+
+                # if var doesn't exist, allocate a memory to it
+                if var not in self.variables:
+                    utils.allocate_memory(self.variables, var)
+
+                # make the instruction
+                instruction = f"@{self.variables[var]}"
+            else:
+                instruction = line
+
+            result.append(instruction)
+
+        self.code = result
