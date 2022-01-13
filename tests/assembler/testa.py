@@ -4,11 +4,21 @@ import unittest
 
 
 class TestATranslator(unittest.TestCase):
-    def setUp(self):
-        pass
+    def test_translation(self):
+        a_translator = ATranslator()
 
-    def tearDown(self):
-        pass
+        result = a_translator.translate('@123')
+        self.assertEqual(result, '0000000001111011')
+
+        result = a_translator.translate('@4121')
+        self.assertEqual(result, '0001000000011001')
+
+    def test_translation_error(self):
+        a_translator = ATranslator()
+
+        self.assertRaises(Exception, lambda: a_translator.translate('@'))
+
+        self.assertRaises(Exception, lambda: a_translator.translate('@24577'))
 
 
 if __name__ == '__main__':
