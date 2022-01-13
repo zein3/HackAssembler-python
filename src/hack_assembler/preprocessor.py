@@ -2,6 +2,8 @@
 # Remove blank lines and comments (both line and in-line).
 # The output file.o should be identical to the binary loaded to the CPU Emulator.
 
+import re
+
 
 variables = {
     "R0": 0,
@@ -53,7 +55,21 @@ def clean_code(code):
     Remove all blank lines and comments from the file, as well as trim every instruction.
     Don't delete labels as they're going to be used later.
     """
-    pass
+    cleanedCode = []
+    for line in code:
+        # Remove blank lines and line comments
+        if line == '' or line.startswith('//'):
+            continue
+
+        # Remove inline comments
+        line = re.sub(r"\/\/.*", "", line)
+
+        # Delete all whitespace
+        line = re.sub(r"\s", "", line)
+
+        cleanedCode.append(line)
+
+    return cleanedCode
 
 
 def find_labels(code):

@@ -22,7 +22,7 @@ class TestPreprocessor(unittest.TestCase):
         code = preprocessor.parse_file(self.file3)
         result = preprocessor.clean_code(code)
 
-        self.assertEqual(result, ['@12', '(TEST)', 'A=D', '(TEST)', 'D;JGT', '(END)', '@END', '0;JMP'])
+        self.assertEqual(result, ['@12', '(TEST)', 'A=D', '@TEST', 'D;JGT', '(END)', '@END', '0;JMP'])
 
     # def test_can_find_all_label_declarations(self):
         # pass
@@ -39,6 +39,7 @@ class TestPreprocessor(unittest.TestCase):
     def tearDown(self):
         self.file1.close()
         self.file2.close()
+        self.file3.close()
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@
 
      A = D     // Set the content of the A register to the D register
 
-  (TEST)
+  @TEST
 
    D ;    JGT
 
