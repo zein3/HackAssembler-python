@@ -76,7 +76,17 @@ def find_labels(code):
     """
     Find all label declarations in code to add them to variables dictionary and then remove them from the code.
     """
-    pass
+    newCode = []
+    i = 0
+    for line in code:
+        labels = re.search(r"(?<=\()([a-zA-Z]+)(?=\))", line)
+        if labels:
+            variables[labels[0]] = i
+        else:
+            newCode.append(line)
+            i += 1
+
+    return newCode
 
 
 def replace_symbols(code):
