@@ -1,0 +1,17 @@
+// This is a comment
+
+@12      // This is an A instruction
+(TEST)   // This is a label declaration
+
+
+     A = D     // Set the content of the A register to the D register
+
+  (TEST)
+
+   D ;    JGT
+
+ (END)
+
+
+ @END
+ 0;JMP
