@@ -9,8 +9,12 @@ class TestPreprocessor(unittest.TestCase):
         self.file1 = open(testfile_folder / "testfile1")
         self.file2 = open(testfile_folder / "testfile2")
         self.file3 = open(testfile_folder / "testfile3")
+        self.file4 = open(testfile_folder / "testfile4")
+        self.file5 = open(testfile_folder / "testfile5")
+        self.file5cmp = open(testfile_folder / "testfile5.cmp")
 
         self.code3 = preprocessor.parse_file(self.file3)
+        self.code4 = preprocessor.parse_file(self.file4)
 
     def test_can_parse_file(self):
         result = preprocessor.parse_file(self.file1)
@@ -35,19 +39,32 @@ class TestPreprocessor(unittest.TestCase):
         self.assertTrue("TEST" in preprocessor.variables and "END" in preprocessor.variables)
         self.assertTrue(preprocessor.variables["TEST"] == 1 and preprocessor.variables["END"] == 4)
 
-    # def test_can_replace_symbols(self):
-        # pass
+    def test_can_replace_labels(self):
+        temp = preprocessor.clean_code(self.code3)
+        temp2 = preprocessor.find_labels(temp)
+        result = preprocessor.replace_symbols(temp2)
 
-    # def test_full_testing_1(self):
-        # pass
+        self.assertEqual(result, ['@12', 'A=D', '@1', 'D;JGT', '@4', '0;JMP'])
 
-    # def test_full_testing_2(self):
-        # pass
+    def test_can_allocate_variables(self):
+        result = preprocessor.replace_symbols(self.code4)
+
+        self.assertEqual(result, ['@16', 'M=1', '@17', 'M=0'])
+
+    def test_full(self):
+        result = preprocessor.preprocessor(self.file5)
+        compare = preprocessor.parse_file(self.file5cmp)
+        print(result)
+
+        # self.assertEqual(result, compare)
 
     def tearDown(self):
         self.file1.close()
         self.file2.close()
         self.file3.close()
+        self.file4.close()
+        self.file5.close()
+        self.file5cmp.close()
 
 
 if __name__ == '__main__':

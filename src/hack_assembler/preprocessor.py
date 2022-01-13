@@ -3,6 +3,7 @@
 # The output file.o should be identical to the binary loaded to the CPU Emulator.
 
 import re
+from . import utils
 
 
 variables = {
@@ -32,14 +33,17 @@ variables = {
 }
 
 
-def preprocessor(file):
+def preprocessor(file) -> list:
     code = parse_file(file)
-    clean_code(code)
-    find_labels(code)
-    replace_symbols(code)
+    cleaned_code = clean_code(code)
+    labeled_code = find_labels(cleaned_code)
+    result = replace_symbols(labeled_code)
+    print(variables)
+
+    return result
 
 
-def parse_file(file):
+def parse_file(file) -> list:
     """
     Parse the file into an array of strings
     """
@@ -50,7 +54,7 @@ def parse_file(file):
         return result[0:len(result) - 1]
 
 
-def clean_code(code):
+def clean_code(code: list) -> list:
     """
     Remove all blank lines and comments from the file, as well as trim every instruction.
     Don't delete labels as they're going to be used later.
@@ -72,26 +76,46 @@ def clean_code(code):
     return cleanedCode
 
 
-def find_labels(code):
+def find_labels(code: list) -> list:
     """
     Find all label declarations in code to add them to variables dictionary and then remove them from the code.
     """
-    newCode = []
+    result = []
     i = 0
     for line in code:
         labels = re.search(r"(?<=\()([a-zA-Z]+)(?=\))", line)
         if labels:
             variables[labels[0]] = i
         else:
-            newCode.append(line)
+            result.append(line)
             i += 1
 
-    return newCode
+    return result
 
 
-def replace_symbols(code):
+def replace_symbols(code: list) -> list:
     """
     Replace all the symbols in the code with addresses (all symbols are in A-instruction).
     When an unknown symbol is found, allocate it to an unused address.
     """
-    pass
+    result = []
+    for line in code:
+        if re.search(r"^@[^0-9]+", line):
+            # get the variable name
+            var = re.search(r"(?<=@).+", line)
+            if not var:
+                raise Exception(f"Invalid A-instruction found.")
+            var = var[0]
+
+            # if var doesn't exist, allocate a memory to it
+            if var not in variables:
+                utils.allocate_memory(variables, var)
+
+            # make the instruction
+            instruction = f"@{variables[var]}"
+        else:
+            instruction = line
+
+        result.append(instruction)
+
+    return result
