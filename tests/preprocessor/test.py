@@ -10,14 +10,11 @@ class TestPreprocessor(unittest.TestCase):
         self.file2 = open(testfile_folder / "testfile2")
         self.file3 = open(testfile_folder / "testfile3")
         self.file4 = open(testfile_folder / "testfile4")
-        self.file5 = open(testfile_folder / "testfile5")
-        self.file5cmp = open(testfile_folder / "testfile5.cmp")
 
     def test_can_parse_file(self):
         pp = PreProcessor()
         pp.parse_file(self.file1)
         self.assertEqual(pp.code, ['Testing', 'Second Line', 'Third Line'])
-
 
     def test_can_parse_file_without_EOF(self):
         pp = PreProcessor()
@@ -61,20 +58,11 @@ class TestPreprocessor(unittest.TestCase):
 
         self.assertEqual(pp.code, ['@16', 'M=1', '@17', 'M=0'])
 
-    # def test_full(self):
-        # result = preprocessor.preprocessor(self.file5)
-        # compare = preprocessor.parse_file(self.file5cmp)
-        # print(result)
-
-        # self.assertEqual(result, compare)
-
     def tearDown(self):
         self.file1.close()
         self.file2.close()
         self.file3.close()
         self.file4.close()
-        self.file5.close()
-        self.file5cmp.close()
 
 
 if __name__ == '__main__':
