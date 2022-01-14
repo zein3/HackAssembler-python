@@ -18,8 +18,6 @@ class TestATranslator(unittest.TestCase):
 
         self.assertRaises(Exception, lambda: a_translator.translate('@'))
 
-        self.assertRaises(Exception, lambda: a_translator.translate('@24577'))
-
 
 if __name__ == '__main__':
     unittest.main()
