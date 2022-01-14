@@ -11,7 +11,8 @@ import re
 
 def main():
     if len(sys.argv) < 2:
-        raise Exception('no file specified')
+        print("file name not found")
+        return
 
     full_file_name = sys.argv[1]
     file_name = re.search(r".*(?=\.)", full_file_name)
