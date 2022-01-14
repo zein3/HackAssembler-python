@@ -20,13 +20,12 @@ def main():
     else:
         file_name = full_file_name
 
-    print(file_name)
-    # with open(full_file_name, 'r') as file:
-        # pp = PreProcessor()
+    with open(full_file_name, 'r') as file:
+        pp = PreProcessor()
 
-        # result = pp.preprocess(file)
-        # result = assembler.assemble(result)
+        result = pp.preprocess(file)
+        result = assembler.assemble(result)
 
-
-if __name__ == '__main__':
-    main()
+        with open(file_name + '.hack', 'w') as output:
+            for line in result:
+                output.write(line + '\n')
