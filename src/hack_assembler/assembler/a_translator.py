@@ -3,11 +3,11 @@ import re
 
 class ATranslator():
     def translate(self, instruction):
-        parse = re.search(r"(?<=@)[0-9]+", instruction)
-        if not parse:
+        if len(instruction) < 2:
             raise Exception("Invalid A-instruction")
 
-        number = int(parse[0])
+        parse = instruction[1:]
+        number = int(parse)
 
         if number > 24576:
             raise Exception("Out of bound memory")
