@@ -6,16 +6,16 @@
 # - jump
 # and the resulting machine code will be '111' + comp + dest + jump
 
-from src.hack_assembler.assembler.a_translator import ATranslator
-from src.hack_assembler.assembler.c_translator import CTranslator
+from . import a_translator
+from . import c_translator
 
 
 class Assembler():
     def __init__(self):
-        self.a_translator = ATranslator()
-        self.c_translator = CTranslator()
+        self.a_translator = a_translator.ATranslator()
+        self.c_translator = c_translator.CTranslator()
 
-    def main(self, symbolic_code):
+    def assemble(self, symbolic_code: list) -> list:
         machine_code = []
         for line in symbolic_code:
             if line.startswith("@"):
@@ -24,4 +24,4 @@ class Assembler():
                 instruction = self.c_translator.translate(line)
             machine_code.append(instruction)
 
-        #TODO
+        return machine_code

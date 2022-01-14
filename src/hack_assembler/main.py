@@ -3,13 +3,29 @@
 # Use the CPU Emulator to test the output of file.o
 # Convert file.o to file.hack, then delete file.o
 
-from src.hack_assembler.preprocessor import PreProcessor
-from src.hack_assembler.assembler.assembler import Assembler
+from . import assembler
+from .preprocessor import PreProcessor
 import sys
+import re
 
 
 def main():
-    pass
+    if len(sys.argv) < 2:
+        raise Exception('no file specified')
+
+    full_file_name = sys.argv[1]
+    file_name = re.search(r".*(?=\.)", full_file_name)
+    if file_name != None and type(file_name) == re.Match:
+        file_name = file_name[0]
+    else:
+        file_name = full_file_name
+
+    print(file_name)
+    # with open(full_file_name, 'r') as file:
+        # pp = PreProcessor()
+
+        # result = pp.preprocess(file)
+        # result = assembler.assemble(result)
 
 
 if __name__ == '__main__':

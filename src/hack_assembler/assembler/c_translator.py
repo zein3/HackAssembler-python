@@ -1,4 +1,4 @@
-from src.hack_assembler.assembler.constants import JUMP_TABLE, COMP_TABLE
+from . import constants
 import re
 
 
@@ -44,7 +44,7 @@ class CTranslator():
             return '0000000'
 
         try:
-            result = COMP_TABLE[comp]
+            result = constants.COMP_TABLE[comp]
         except:
             raise Exception('Invalid C-instruction (comp)')
 
@@ -65,7 +65,7 @@ class CTranslator():
             return '000'
 
         try:
-            result = JUMP_TABLE[jump]
+            result = constants.JUMP_TABLE[jump]
         except:
             raise Exception("Invalid C-instruction (comp)")
 

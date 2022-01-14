@@ -36,7 +36,7 @@ class PreProcessor():
     def __init__(self):
         self.variables = INITIAL_VARIABLES
 
-    def main(self, file):
+    def preprocess(self, file) -> list:
         self.parse_file(file)
         self.clean_code()
         self.find_labels()
