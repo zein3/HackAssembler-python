@@ -9,7 +9,4 @@ if __name__ == '__main__':
         sys.exit()
 
     hack_assembler = HackAssembler()
-    if hack_assembler.assemble(sys.argv[1]):
-        print("Successful operation.")
-    else:
-        print("Failed operation.")
+    hack_assembler.assemble(sys.argv[1])

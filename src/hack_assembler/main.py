@@ -12,20 +12,16 @@ class HackAssembler():
         self.preprocessor = PreProcessor()
         self.assembler = Assembler()
 
-    def assemble(self, filename: str) -> bool:
+    def assemble(self, filename: str):
         """
         Assemble file with filename.asm into filename.hack
         Returns true for successful operation
         """
-        try:
-            with open(f'{filename}.asm', 'r') as file:
-                code = self.preprocessor.preprocess(file)
-                result = self.assembler.assemble(code)
+        with open(f'{filename}.asm', 'r') as file:
+            code = self.preprocessor.preprocess(file)
+            result = self.assembler.assemble(code)
 
-                with open(f'{filename}.hack', 'w') as output:
-                    for line in result:
-                        output.write(line + '\n')
-            return True
-        except:
-            return False
+            with open(f'{filename}.hack', 'w') as output:
+                for line in result:
+                    output.write(line + '\n')
 
