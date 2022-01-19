@@ -3,30 +3,29 @@
 # Use the CPU Emulator to test the output of file.o
 # Convert file.o to file.hack, then delete file.o
 
-from . import assembler
+from .assembler import Assembler
 from .preprocessor import PreProcessor
-import sys
-import re
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("file name not found")
-        return
+class HackAssembler():
+    def __init__(self):
+        self.preprocessor = PreProcessor()
+        self.assembler = Assembler()
 
-    full_file_name = sys.argv[1]
-    file_name = re.search(r".*(?=\.)", full_file_name)
-    if file_name != None and type(file_name) == re.Match:
-        file_name = file_name[0]
-    else:
-        file_name = full_file_name
+    def assemble(self, filename: str) -> bool:
+        """
+        Assemble file with filename.asm into filename.hack
+        Returns true for successful operation
+        """
+        try:
+            with open(f'{filename}.asm', 'r') as file:
+                code = self.preprocessor.preprocess(file)
+                result = self.assembler.assemble(code)
 
-    with open(full_file_name, 'r') as file:
-        pp = PreProcessor()
+                with open(f'{filename}.hack', 'w') as output:
+                    for line in result:
+                        output.write(line + '\n')
+            return True
+        except:
+            return False
 
-        result = pp.preprocess(file)
-        result = assembler.assemble(result)
-
-        with open(file_name + '.hack', 'w') as output:
-            for line in result:
-                output.write(line + '\n')
