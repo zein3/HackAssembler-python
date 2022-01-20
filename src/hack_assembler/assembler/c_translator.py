@@ -46,7 +46,16 @@ class CTranslator():
         try:
             result = constants.COMP_TABLE[comp]
         except:
-            raise Exception(f"Invalid C-instruction (comp): {comp}")
+            # if comp doesn't work and comp is a binary operation, try reverse(comp)
+            # if comp is a binary operation
+            if len(comp) >= 3:
+                try:
+                    newcomp = comp[::-1]
+                    result = constants.COMP_TABLE[newcomp]
+                except:
+                    raise Exception(f"Invalid C-instruction (comp): {comp}")
+            else:
+                raise Exception(f"Invalid C-instruction (comp): {comp}")
 
         return result
 
