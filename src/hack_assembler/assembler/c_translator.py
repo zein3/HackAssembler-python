@@ -46,7 +46,7 @@ class CTranslator():
         try:
             result = constants.COMP_TABLE[comp]
         except:
-            raise Exception('Invalid C-instruction (comp)')
+            raise Exception(f"Invalid C-instruction (comp): {comp}")
 
         return result
 
@@ -67,6 +67,6 @@ class CTranslator():
         try:
             result = constants.JUMP_TABLE[jump]
         except:
-            raise Exception("Invalid C-instruction (comp)")
+            raise Exception(f"Invalid C-instruction (jump): {jump}")
 
         return result

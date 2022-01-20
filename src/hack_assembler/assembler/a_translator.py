@@ -4,7 +4,7 @@ import re
 class ATranslator():
     def translate(self, instruction):
         if len(instruction) < 2:
-            raise Exception("Invalid A-instruction")
+            raise Exception(f"Invalid A-instruction: {instruction}")
 
         parse = instruction[1:]
         number = int(parse)

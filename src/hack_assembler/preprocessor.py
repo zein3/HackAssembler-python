@@ -111,7 +111,7 @@ class PreProcessor():
                 # get the variable name
                 var = re.search(r"(?<=@).+", line)
                 if not var:
-                    raise Exception(f"Invalid A-instruction found.")
+                    raise Exception(f"Invalid A-instruction: {line}")
                 var = var[0]
 
                 # if var doesn't exist, allocate a memory to it
